@@ -1,5 +1,6 @@
 #ifndef MDEF_H
 #define MDEF_H 1
+#include "milterconfig.h"
 #include <time.h>
 #include <errno.h>
 #include <getopt.h>
@@ -43,6 +44,12 @@
 #define NUMHDR 10
 #define BODYSIZE 10240
 #define DKIMHDR "DKIM-Signature"
+#define ABUSE_HDR_VAL "abuse@cleanmail.in"
+#define ABUSE_HDR "X-Abuse-Reports-To"
+#define DSIGNDOM "cleanmail.in"
+#define MAXHEADERSIZE 2000
+#define MAXSINGLEHDR 200
+#define MAXSINGLEVAL 180
 
 typedef struct {
     char *key;
@@ -61,7 +68,8 @@ typedef struct {
     char *pidfile;
     mlist *signheaders;
     mlist *signdomains;
-} milter_cfg;
+    RSA *rsa_private;
+    } milter_cfg;
 
 
 char socket1[300];
@@ -76,17 +84,25 @@ void printf_conf(milter_cfg *cfg);
 char * trim_strdup(char * str);
 void mlist_read(mlist *ml, char *val, int max);
 int md5_b64(char *result_hex, char* input);
+int debuglog(char *a,char *b,char *c,char *d);
+int concat_h(char *dest , int length_dest, char *src);
 
+
+int canon_hdr(char *headerf, char *headerv, int headerv_len, char *dest,char *hdr);
 struct mlfiPriv {
     char envfrom[MAXIDSIZE];
     char headerdom[MAXDOMSIZE];
     char adom[MAXDOMSIZE];
     int hd;
-    stringpair **headers;
     char *mailbody;
+    short int addheader;
     short int addsignf;
+    short int addsigna;
+    char header_str[MAXHEADERSIZE];
+    char header_list[MAXHEADERSIZE];
     int size;
     int alloc;
+    short int debug;
 
 };
 

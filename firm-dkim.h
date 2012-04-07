@@ -1,8 +1,4 @@
-/*This is the dkim library from http://code.google.com/p/firm-dkim
- * Please check the documentation from firm-dkim directly
- *
- *
- */
+
 #ifndef _FIRM_DKIM_H_
 #define _FIRM_DKIM_H_
 
@@ -25,5 +21,6 @@ typedef struct {
 } stringpair;
 
 char *dkim_create(stringpair **headers, int headerc, char *body, char *pkey, char *domain, char *selector, int v);
-
+char *dkim_signature(char *hstr, char *header_list, char *body, RSA *rsa_private, char *domain, char *selector,int v);
+int rsa_read_pem(RSA **rsa, char *buff, int len);
 #endif
